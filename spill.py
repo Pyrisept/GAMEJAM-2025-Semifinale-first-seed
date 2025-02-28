@@ -72,7 +72,7 @@ class Spill():
         pass
 
     def render(self):
-        self.screen.blit(pygame.transfrom.scale(self.game_canvas,(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)), (0,0))
+        self.screen.blit(pygame.transform.scale(self.game_canvas,(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)), (0,0))
         pygame.display.flip()
 
     def get_dt(self):
@@ -90,10 +90,18 @@ class Spill():
     def load_assets(self):
         self.assets_dir = os.path.join("assets")
         self.sprite = os.path.join(self.assets_dir, "sprites")
-        self.font = os.path.join(self.font_dir, "AGoblinAppears-o2aV.ttf")
+        self.font = pygame.font.Font(os.path.join(self.font_dir, "AGoblinAppears-o2aV.ttf"), 20)
 
+
+    def reset_keys(self):
+        for action in self.actions:
+            self.actions[action] = False
 
  
 
+if __name__ == "__main__":
+    g = Spill()
+    while g.running:
+        g.game_loop()
 
 
