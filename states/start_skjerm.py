@@ -1,5 +1,5 @@
 # Start skjerm for Rudmon spill.
-
+from button import Button
 import pygame, sys
 
 pygame.init()
