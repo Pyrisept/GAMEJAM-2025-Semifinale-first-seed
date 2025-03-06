@@ -4,7 +4,7 @@ import os
 import time
 import pygame
 
-
+from states.start_skjerm import title
 class Spill():
     def __init__(self):
         pygame.init()
@@ -16,6 +16,8 @@ class Spill():
         self.actions = {"left": False, "right": False, "up" : False, "down" : False, "action1" : False, "action2" : False, "start" : False}
         self.dt, self.prev_time = 0, 0
         self.state_stack = []
+        self.load_assets()
+        self.load_states()
 
 
     def game_loop(self):
@@ -69,7 +71,7 @@ class Spill():
 
 
     def update(self):
-        pass
+        self.state_stack[-1].update(self.dt, self.actions) 
 
     def render(self):
         self.screen.blit(pygame.transform.scale(self.game_canvas,(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)), (0,0))
@@ -89,8 +91,15 @@ class Spill():
     
     def load_assets(self):
         self.assets_dir = os.path.join("assets")
-        self.sprite = os.path.join(self.assets_dir, "sprites")
+        self.sprite_dir = os.path.join(self.assets_dir, "sprites")
+        self.spiller_dir = os.path.join(self.sprite_dir, "spiller")
+        self.font_dir = os.path.join(self.assets_dir, "font")
+        self.bilder_dir = os.path.join(self.assets_dir, "bilder")
         self.font = pygame.font.Font(os.path.join(self.font_dir, "AGoblinAppears-o2aV.ttf"), 20)
+
+    def load_states(self):
+        self.title_screen = Title(self)
+        self.state_stack.append(self.title_screen)
 
 
     def reset_keys(self):
