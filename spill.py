@@ -4,7 +4,7 @@ import os
 import time
 import pygame
 
-from states.start_skjerm import title
+from states.start_skjerm import MainMenu
 class Spill():
     def __init__(self):
         pygame.init()
@@ -26,6 +26,7 @@ class Spill():
             self.get_events()
             self.update()
             self.render()
+            self.reset_keys()
 
 
     def get_events(self):
@@ -74,8 +75,13 @@ class Spill():
         self.state_stack[-1].update(self.dt, self.actions) 
 
     def render(self):
-        self.screen.blit(pygame.transform.scale(self.game_canvas,(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)), (0,0))
+        self.game_canvas.fill((255, 0, 0))  # Rød bakgrunn for debugging
+        self.state_stack[-1].render(self.game_canvas)  # Tegner menyen på game_canvas
+        self.screen.blit(pygame.transform.scale(self.game_canvas, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT)), (0, 0))
         pygame.display.flip()
+        
+        
+        
 
     def get_dt(self):
         nå = time.time()
@@ -98,7 +104,7 @@ class Spill():
         self.font = pygame.font.Font(os.path.join(self.font_dir, "AGoblinAppears-o2aV.ttf"), 20)
 
     def load_states(self):
-        self.title_screen = Title(self)
+        self.title_screen = MainMenu(self)
         self.state_stack.append(self.title_screen)
 
 

@@ -1,6 +1,6 @@
 import pygame, os
 from states.state import State
-from states.party import PartyMenu
+from states.Party import PartyMenu
 
 class PauseMenu(State):
     def __init__(self, game):
