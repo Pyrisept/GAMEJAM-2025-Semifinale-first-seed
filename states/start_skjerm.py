@@ -1,5 +1,6 @@
 # Start skjerm for Rudmon spill.
 import pygame, sys, os
+from states.state import State
 pygame.init()
 
 SCREEN_WIDTH, SCREEN_HEIGHT = 1280, 720
@@ -41,10 +42,19 @@ class Button():
     def changeColor(self, position):
         self.text = self.font.render(self.text_input, True, self.hovering_color if self.rect.collidepoint(position) else self.base_color)
 
-class Menu:
-    def __init__(self):
-        self.running = True
+class Menu(State):
+    def __init__(self, game):
+        super().__init__(game)
     
+    def update(self, delta_time, actions):
+        MENU_MOUSE_POS = pygame.mouse.get_pos()
+
+        self.buttons = [
+            Button(None, (640, 250), "PLAY", get_font(75), "#EF0107", "Black"),
+            Button(None, (640, 250), "OPTIONS", get_font(75), "#EF0107", "Black"),
+            Button(None, (640, 250), "QUIT", get_font(75), "#EF0107", "Black")
+        ]
+
     def main_menu(self):
         pygame.display.set_caption("Hovedmeny")
         while self.running:

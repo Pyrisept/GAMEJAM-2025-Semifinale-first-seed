@@ -1,4 +1,3 @@
-
 import pygame, os 
 from states.state import State
 
@@ -19,15 +18,18 @@ class Game_world(State):
 class Spiller():
     def __init__(self, game):
         self.game = game
+        self.sprite_dir = os.path.join(self.game.assets_dir, "sprites", "character.png")
         self.load_sprites()
         self.posisjon_x, self.posisjon_y = 200, 200
         self.current_frame, self.last_frame_update = 0, 0
-
+        self.curr_img = self.front_sprites[0]
+        self.curr_anim_list = self.front_sprites
 
     def update(self, delta_time, actions):
         #leser av input
         retning_x = actions["right"] - actions["left"]
-        retning_y = actions["right"] - actions["left"]
+        retning_y = actions["down"] - actions["up"]
+        
         #reagerer
         self.posisjon_x += 100 * delta_time * retning_x
         self.posisjon_y += 100 * delta_time * retning_y
@@ -68,11 +70,19 @@ class Spiller():
         
         self.front_sprites, self.back_sprites, self.right_sprites, self.left_sprites = [],[],[],[]
 
-        for i in range(1, 5):
-            self.front_sprites.append(pygame.image.load(os.path.join(self.sprite_dir, "spiller_front" + str(i) + ".png")))
-            self.back_sprites.append(pygame.image.load(os.path.join(self.sprite_dir, "spiller_back" + str(i) + ".png")))
-            self.right_sprites.append(pygame.image.load(os.path.join(self.sprite_dir, "spiller_right" + str(i) + ".png")))
-            self.left_sprites.append(pygame.image.load(os.path.join(self.sprite_dir, "spiller_left" + str(i) + ".png")))
+        sprite_sheet = pygame.image.load(os.path.join(self.game.sprite_dir, "spiller_spritesheet.png"))
+
+        frame_width = 32
+        frame_height = 32
+
+        def get_sprite(x, y):
+            return sprite_sheet.subsurface(pygame.Rect(x * frame_width, y * frame_height, frame_width, frame_height))
+
+        for i in range(4):
+            self.front_sprites.append(get_sprite(i, 0))
+            self.back_sprites.append(get_sprite(i, 1))
+            self.right_sprites.append(get_sprite(i, 2))
+            self.left_sprites.append(get_sprite(i, 3)) 
 
         self.curr_img = self.front_sprites[0]
         self.curr_anim_list = self.front_sprites
