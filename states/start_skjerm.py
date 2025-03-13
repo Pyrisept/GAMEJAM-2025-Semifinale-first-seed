@@ -18,15 +18,39 @@ class StartSkjerm(State):
         # Create menu buttons
         self.buttons = [
             Button("START", (self.game.SCREEN_WIDTH //4, 150), self.font, (255, 255, 255), (200, 200, 200)),
-            Button("QUIT", (self.game.SCREEN_WIDTH // 4, 200), self.font, (255, 255, 255), (200, 200, 200))
+            Button("QUIT", (self.game.SCREEN_WIDTH // 4, 200), self.font, (255, 255, 255), (200, 200, 200)),
+            Button("RACE", (self.game.SCREEN_WIDTH // 4, 250), self.font, (255, 255, 255), (200, 200, 200))  # New button for the race
         ]
+        
 
     def update(self, delta_time, actions):
         """Skal håndtere keys og handlinger"""
         if actions["start"]:  
             self.game.state_stack.append(Game_world(self.game))  # Gå til game_world= Game_world(self.game)  # Gå til game_world
-            self.game.state_stack[-1].enter_state()
+            self.game.state_stack[-1].enter_states()
         self.game.reset_keys()
+
+
+        if actions["mouse_click"]:  # Check if the mouse is clicked
+            mouse_pos = pygame.mouse.get_pos()
+            # Scale mouse position to game canvas coordinates
+            scale_x = self.game.GAME_W / self.game.SCREEN_WIDTH
+            scale_y = self.game.GAME_H / self.game.SCREEN_HEIGHT
+            scaled_mouse_pos = (mouse_pos[0] * scale_x, mouse_pos[1] * scale_y)
+
+
+            for button in self.buttons:
+                if button.check_for_input(scaled_mouse_pos):
+                    print(f"Button clicked: {button.text}")  # Debug print
+                    if button.text == "START":
+                        self.game.state_stack.append(Game_world(self.game))
+                        self.game.state_stack[-1].enter_state()
+                    elif button.text == "QUIT":
+                        self.game.running = False
+                    elif button.text == "RACE":  # Handle the race button
+                        self.game.state_stack.append(PokemonRace(self.game))
+                        self.game.state_stack[-1].enter_state()
+
 
     def render(self, display):
         try :
@@ -91,5 +115,4 @@ class Button:
             self.text_render = self.font.render(self.text, True, self.hover_color)
         else:
             self.text_render = self.font.render(self.text, True, self.base_color)
-
 

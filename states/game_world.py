@@ -29,6 +29,12 @@ class Spiller():
     def __init__(self, game, walls):
         self.game = game
         self.walls = walls
+        self.posisjon_x, self.posisjon_y = 200, 200  # Starting position
+        self.size = 50  # Size of the square
+        self.color = (0, 0, 255)  # Blue color
+        self.rect = pygame.Rect(self.posisjon_x, self.posisjon_y, self.size, self.size)       
+        
+        """
         self.spiller_dir = os.path.join(self.game.sprite_dir, "actual_player")
         self.load_sprites()
         self.sprite_dir = game.spiller_dir
@@ -36,8 +42,10 @@ class Spiller():
         self.current_frame, self.last_frame_update = 0, 0
         self.curr_img = self.front_sprites[0]
         self.curr_anim_list = self.front_sprites
-
+    
         self.rect = self.curr_img.get_rect(topleft=(self.posisjon_x, self.posisjon_y))
+        """
+        
 
     def update(self, delta_time, actions):
 
@@ -54,10 +62,12 @@ class Spiller():
             self.posisjon_x, self.posisjon_y = prev_x, prev_y
             self.rect.topleft = (self.posisjon_x, self.posisjon_y)
 
-        self.animer(delta_time, retning_x, retning_y)
+        #self.animer(delta_time, retning_x, retning_y)
+        self.rect.topleft = (self.posisjon_x, self.posisjon_y)
 
     def render(self, display):
-        display.blit(self.curr_img, (self.posisjon_x, self.posisjon_y))
+        #display.blit(self.curr_img, (self.posisjon_x, self.posisjon_y))
+        pygame.draw.rect(display, self.color, self.rect)  # Draw a blue square    
 
     def animer(self, delta_time, retning_x, retning_y):
         #Sjekke når den sist oppdaterte animasjonen
@@ -100,14 +110,17 @@ class Spiller():
         return False
 
 
-
+"""
     def load_sprites(self):
+
         self.front_sprites, self.back_sprites, self.right_sprites, self.left_sprites = [],[],[],[]
         self.idle_sprites = []
 
-        walk_sheet = pygame.image.load(os.path.join(self.spiller_dir, "walk.png")).convert_alpha()
-        idle_sheet = pygame.image.load(os.path.join(self.spiller_dir, "idle.png")).convert_alpha()
-
+        try : 
+            walk_sheet = pygame.image.load(os.path.join(self.spiller_dir, "walk.png")).convert_alpha()
+            idle_sheet = pygame.image.load(os.path.join(self.spiller_dir, "idle.png")).convert_alpha()
+        except FileNotFoundError:
+                print("Even test_image.png is missing—something is wrong with paths!")
 
         print(f"Loading walk sheet from: {walk_sheet}")
         print(f"Loading idle sheet from: {idle_sheet}")
@@ -138,7 +151,7 @@ class Spiller():
 
         self.curr_img = self.idle_sprites[0]
         self.curr_anim_list = self.idle_sprites
-
+"""
 
 
 
