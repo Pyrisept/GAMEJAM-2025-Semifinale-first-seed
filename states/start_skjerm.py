@@ -9,40 +9,62 @@ class StartSkjerm(State):
     def __init__(self, game):
         super().__init__(game)
         print("StartScreen initialized")
+        if not os.path.exists(os.path.join(self.game.assets_dir, "bilder", "Menu", "RUD.jpg")):
+            print("Background image not found!")
         self.bg = pygame.image.load(os.path.join(self.game.assets_dir, "bilder", "Menu", "RUD.jpg"))
-
         # Load font
-        self.font = pygame.font.Font(os.path.join(self.game.font_dir, "AGoblinAppears-o2aV.ttf"), 50)
+        self.font = pygame.font.Font(os.path.join(self.game.font_dir, "AGoblinAppears-o2aV.ttf"), 30)
 
         # Create menu buttons
         self.buttons = [
-            Button("START", (self.game.SCREEN_WIDTH // 2, 300), self.font, (255, 255, 255), (200, 200, 200)),
-            Button("QUIT", (self.game.SCREEN_WIDTH // 2, 400), self.font, (255, 255, 255), (200, 200, 200))
+            Button("START", (self.game.SCREEN_WIDTH //4, 150), self.font, (255, 255, 255), (200, 200, 200)),
+            Button("QUIT", (self.game.SCREEN_WIDTH // 4, 200), self.font, (255, 255, 255), (200, 200, 200))
         ]
 
     def update(self, delta_time, actions):
         """Skal håndtere keys og handlinger"""
         if actions["start"]:  
-            new_state = Game_world(self.game)  # Gå til game_world
-            new_state.enter_state()
+            self.game.state_stack.append(Game_world(self.game))  # Gå til game_world= Game_world(self.game)  # Gå til game_world
+            self.game.state_stack[-1].enter_state()
         self.game.reset_keys()
 
     def render(self, display):
-        """Tegenr startskjermen"""
-        print("Rendering tid. og han rendereret overalt. Morgz mum")
-        
-        self.game.game_canvas.fill((0, 0, 255))
-        print("Game canvas filled with blue")
+        try :
+            """Tegenr startskjermen"""
+            print("Rendering tid. og han rendereret overalt. Morgz mum")
+            display.fill((0, 0, 0))  # Cleare display
+            self.game.game_canvas.fill((0, 0, 255))
+            
+            print(f"Rendering StartSkjerm... display: {type(display)} {display.get_size()}")
 
-        title_text = self.font.render("RUDMON", True, (255, 215, 0))
-        display.blit(title_text, (self.game.SCREEN_WIDTH // 2 - title_text.get_width() // 2, 100))
-        print("Title text rendered")
-       
+            #title_text = self.font.render("RUDMON", True, (255, 215, 0))
+            #display.blit(title_text, (self.game.SCREEN_WIDTH // 2 - title_text.get_width() // 2, 50))
+
+            title_text = self.font.render("RUDMON", True, (255, 215, 0))
+            title_x = self.game.GAME_W // 2 - title_text.get_width() // 2  # Center horizontally
+            title_y = 50  # Fixed vertical position
+            self.game.game_canvas.blit(title_text, (title_x, title_y))
+
+
+
+            print("Title text rendered")
+        
+        except Exception as e:
+            print(f"Error in StartSkjerm.render(): {e}")
+
         mouse_pos = pygame.mouse.get_pos()
+                    #Må skalere kordinatene til musa siden det er forskjellig "resolution" på game_canvas og display
+        scaled_mouse_pos = (mouse_pos[0] * self.game.GAME_W / self.game.SCREEN_WIDTH,
+        mouse_pos[1] * self.game.GAME_H / self.game.SCREEN_HEIGHT)
+
         for button in self.buttons:
-            button.change_color(mouse_pos)
+            button.change_color(scaled_mouse_pos)
             button.update(display)
         print("Buttons rendered")
+
+
+
+
 
 class Button:
     def __init__(self, text, pos, font, base_color, hover_color):
