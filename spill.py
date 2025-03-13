@@ -35,7 +35,7 @@ class Spill():
     def get_events(self):
 
         for event in pygame.event.get():
-            print(f"Event detected: {event}")
+            #print(f"Event detected: {event}")
             if event.type == pygame.QUIT:
                 print("QUIT event detected")
                 self.playing = False
@@ -78,9 +78,12 @@ class Spill():
 
 
     def update(self):
-        self.state_stack[-1].update(self.dt, self.actions) 
+        if self.state_stack:
+            self.state_stack[-1].update(self.dt, self.actions)
 
     def render(self):
+        self.state_stack[-1].render(self.game_canvas)
+
         #print("Jeg skulle ønske noen kunne rendere... Den ydmyke renderfunskjon")
         #print(f"Current state: {type(self.state_stack[-1])}")
         self.screen.blit(pygame.transform.scale(self.game_canvas,(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)), (0,0))
@@ -97,7 +100,7 @@ class Spill():
         tekst_rect.center = (x,y)
         surface.blit(tekst_surface, tekst_rect)
 
-    
+
     def load_assets(self):
         self.assets_dir = os.path.join("assets")
         self.sprite_dir = os.path.join(self.assets_dir, "sprites")
