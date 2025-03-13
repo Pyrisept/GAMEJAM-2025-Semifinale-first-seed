@@ -48,19 +48,16 @@ class Spiller():
 
         #sette til idle om ingenting har skjedd
         if not (retning_x or retning_y):
-            self.curr_img = self.curr_anim_list[0]
+            self.curr_anim_list = self.idle_sprites
+            self.curr_img = self.idle_sprites[self.current_frame % len(self.idle_sprites)]
             return
 
         #Velger riktig bilder fra listene, egne lister for forskjellige retninger, valgfritt hvor mange animasjonsframes
         if retning_x:
-            if retning_x > 0: self.curr_anim_list = self.right_sprites
-            else:
-                self.curr_anim_list = self.left_sprites
-            
+            self.curr_anim_list = self.right_sprites if retning_x > 0 else self.left_sprites
+        
         if retning_y:
-            if retning_y > 0: self.curr_anim_list = self.front_sprites
-            else:
-                self.curr_anim_list = self.back_sprites
+            self.curr_anim_list = self.front_sprites if retning_y > 0 else self.back_sprites
         
 
         #gå på rundgang igjennom de forskjellige framesene
