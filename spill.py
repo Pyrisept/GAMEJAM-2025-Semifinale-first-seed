@@ -98,7 +98,7 @@ class Spill():
 
     def render_tekst(self, surface, text, colour, x, y):
         tekst_surface = self.font.render(text, True, colour)
-        tekst_rect = tekst_surface.get_rect()
+        tekst_rect = tekst_surface.get_rect()   
         tekst_rect.center = (x,y)
         surface.blit(tekst_surface, tekst_rect)
 
@@ -106,7 +106,7 @@ class Spill():
     def load_assets(self):
         self.assets_dir = os.path.join("assets")
         self.sprite_dir = os.path.join(self.assets_dir, "sprites")
-        self.spiller_dir = os.path.join(self.sprite_dir, "spiller")
+        self.spiller_dir = os.path.join(self.sprite_dir, "actual_player")
         self.font_dir = os.path.join(self.assets_dir, "font")
         self.bilder_dir = os.path.join(self.assets_dir, "bilder")
         self.font = pygame.font.Font(os.path.join(self.font_dir, "AGoblinAppears-o2aV.ttf"), 20)

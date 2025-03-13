@@ -7,7 +7,12 @@ class Game_world(State):
     def __init__(self, game):
         State.__init__(self, game)
         self.genius = pygame.image.load(os.path.join(self.game.bilder_dir, "Map", "genius.jpg"))
-        self.spiller = Spiller(self.game)
+
+
+        self.walls = [Wall(100, 100, 50, 200), Wall(300, 300, 200, 50)]
+
+        self.spiller = Spiller(self.game, self.walls)
+
 
     def update(self, delta_time, actions):
         self.spiller.update(delta_time, actions)
@@ -16,10 +21,15 @@ class Game_world(State):
         display.blit(self.genius, (0, 0))
         self.spiller.render(display)
 
+
+        for wall in self.walls:
+            wall.render(display)
+
 class Spiller():
-    def __init__(self, game):
+    def __init__(self, game, walls):
         self.game = game
-        self.sprite_dir = os.path.join(self.game.assets_dir, "sprites", "character.png")
+        self.walls = walls
+        self.spiller_dir = os.path.join(self.game.sprite_dir, "actual_player")
         self.load_sprites()
         self.sprite_dir = game.spiller_dir
         self.posisjon_x, self.posisjon_y = 200, 200
@@ -27,13 +37,22 @@ class Spiller():
         self.curr_img = self.front_sprites[0]
         self.curr_anim_list = self.front_sprites
 
+        self.rect = self.curr_img.get_rect(topleft=(self.posisjon_x, self.posisjon_y))
+
     def update(self, delta_time, actions):
+
+        prev_x, prev_y = self.posisjon_x, self.posisjon_y
         #leser av input
         retning_x = actions["right"] - actions["left"]
         retning_y = actions["down"] - actions["up"]
         #reagerer
         self.posisjon_x += 100 * delta_time * retning_x
         self.posisjon_y += 100 * delta_time * retning_y
+
+        if self.check_collision():
+            # Revert to previous position if there's a collision
+            self.posisjon_x, self.posisjon_y = prev_x, prev_y
+            self.rect.topleft = (self.posisjon_x, self.posisjon_y)
 
         self.animer(delta_time, retning_x, retning_y)
 
@@ -64,12 +83,40 @@ class Spiller():
             self.current_frame = (self.current_frame + 1) % len(self.curr_anim_list)
             self.curr_img = self.curr_anim_list[self.current_frame]
 
+
+
+    def check_collision(self):
+        # Example: Check collision with screen boundaries
+        if self.posisjon_x < 0 or self.posisjon_x + self.rect.width > self.game.GAME_W:
+            return True
+        if self.posisjon_y < 0 or self.posisjon_y + self.rect.height > self.game.GAME_H:
+            return True
+
+        # Example: Check collision with other objects (e.g., walls)
+        for wall in self.walls:
+            if self.rect.colliderect(wall.rect):
+                return True
+        
+        return False
+
+
+
     def load_sprites(self):
         self.front_sprites, self.back_sprites, self.right_sprites, self.left_sprites = [],[],[],[]
         self.idle_sprites = []
 
-        walk_sheet = pygame.image.load(self.sprite_dir, "walk.png").convert_alpha()
-        idle_sheet = pygame.image.load(self.sprite_dir, "idle.png").convert_alpha()
+        walk_sheet = pygame.image.load(os.path.join(self.spiller_dir, "walk.png")).convert_alpha()
+        idle_sheet = pygame.image.load(os.path.join(self.spiller_dir, "idle.png")).convert_alpha()
+
+
+        print(f"Loading walk sheet from: {walk_sheet}")
+        print(f"Loading idle sheet from: {idle_sheet}")
+
+        # Check if files exist
+        if not os.path.exists(walk_sheet):
+            print(f"Error: File not found - {walk_sheet}")
+        if not os.path.exists(idle_sheet):
+            print(f"Error: File not found - {idle_sheet}")
 
         walk_frame_width = walk_sheet.get_width() // 5
         walk_frame_height = walk_sheet.get_height() // 4
@@ -91,3 +138,47 @@ class Spiller():
 
         self.curr_img = self.idle_sprites[0]
         self.curr_anim_list = self.idle_sprites
+
+
+
+
+class Wall:
+    def __init__(self, x, y, width, height):
+        self.rect = pygame.Rect(x, y, width, height)
+
+    def render(self, display):
+        pygame.draw.rect(display, (255, 0, 0), self.rect)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
