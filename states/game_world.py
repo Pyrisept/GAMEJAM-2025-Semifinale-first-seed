@@ -1,15 +1,19 @@
 import pygame, os 
 from states.state import State
+from states.pause_skjerm import PauseMenu
 
 
 class Game_world(State):
     def __init__(self, game):
         State.__init__(self, game)
-        self.genius = pygame.load(os.path.join(self.game.bilder_dir, "Map", "genius.jpg"))
+        self.genius = pygame.image.load(os.path.join(self.game.bilder_dir, "Map", "genius.jpg"))
         self.spiller = Spiller(self.game)
 
     def update(self, delta_time, actions):
-        self.player.update(delta_time, actions)
+        if actions["start"]:
+            ny_state = PauseMenu(self.game)
+            ny_state.enter_states()
+        self.spiller.update(delta_time, actions)
 
     def render(self, display):
         display.blit(self.genius, (0, 0))
@@ -29,7 +33,6 @@ class Spiller():
         #leser av input
         retning_x = actions["right"] - actions["left"]
         retning_y = actions["down"] - actions["up"]
-        
         #reagerer
         self.posisjon_x += 100 * delta_time * retning_x
         self.posisjon_y += 100 * delta_time * retning_y

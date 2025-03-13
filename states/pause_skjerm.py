@@ -1,19 +1,19 @@
 import pygame, os
 from states.state import State
-from states.party import PartyMenu
+from states.Party import PartyMenu
 
 class PauseMenu(State):
     def __init__(self, game):
         self.game = game
         State.__init__(self, game)
         # Set the menu
-        self.menu_img = pygame.image.load(os.path.join(self.game.assets_dir, "map", "menu.png"))
+        self.menu_img = pygame.image.load(os.path.join(self.game.assets_dir, "bilder", "menu.png"))
         self.menu_rect = self.menu_img.get_rect()
         self.menu_rect.center = (self.game.GAME_W*.85, self.game.GAME_H*.4)
         # Set the cursor and menu states
-        self.menu_options = {0 :"Party", 1 : "Items", 2 :"Magic", 3 : "Exit"}
+        self.menu_options = {0 :"Party", 1 : "Items", 2 :"Dex", 3 : "Exit"}
         self.index = 0
-        self.cursor_img = pygame.image.load(os.path.join(self.game.assets_dir, "map", "cursor.png"))
+        self.cursor_img = pygame.image.load(os.path.join(self.game.assets_dir, "bilder", "cursor.png"))
         self.cursor_rect = self.cursor_img.get_rect()
         self.cursor_pos_y = self.menu_rect.y + 38
         self.cursor_rect.x, self.cursor_rect.y = self.menu_rect.x + 10, self.cursor_pos_y
@@ -39,7 +39,7 @@ class PauseMenu(State):
             new_state.enter_state()
         elif self.menu_options[self.index] == "Items": 
             pass # TO-DO
-        elif self.menu_options[self.index] == "Magic": 
+        elif self.menu_options[self.index] == "Dex": 
             pass # TO-DO
         elif self.menu_options[self.index] == "Exit": 
             while len(self.game.state_stack) > 1:
