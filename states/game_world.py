@@ -70,29 +70,29 @@ class Spiller():
             self.curr_img = self.curr_anim_list[self.current_frame]
 
     def load_sprites(self):
-        
         self.front_sprites, self.back_sprites, self.right_sprites, self.left_sprites = [],[],[],[]
+        self.idle_sprites = []
 
-        sprite_sheet = pygame.image.load(os.path.join(self.game.sprite_dir, "spiller_spritesheet.png"))
+        walk_sheet = pygame.image.load(self.sprite_dir, "walk.png").convert_alpha()
+        idle_sheet = pygame.image.load(self.sprite_dir, "idle.png").convert_alpha()
 
-        frame_width = 32
-        frame_height = 32
+        walk_frame_width = walk_sheet.get_width() // 5
+        walk_frame_height = walk_sheet.get_height() // 4
 
-        def get_sprite(x, y):
-            return sprite_sheet.subsurface(pygame.Rect(x * frame_width, y * frame_height, frame_width, frame_height))
+        idle_frame_width = idle_sheet.get_width() // 2
+        idle_frame_height = idle_sheet.get_height // 4
 
-        for i in range(4):
-            self.front_sprites.append(get_sprite(i, 0))
-            self.back_sprites.append(get_sprite(i, 1))
-            self.right_sprites.append(get_sprite(i, 2))
-            self.left_sprites.append(get_sprite(i, 3)) 
+        def get_sprite(sheet, x, y, width, height):
+             return sheet.subsurface(pygame.Rect(x * width, y * height, width, height))
 
-        self.curr_img = self.front_sprites[0]
-        self.curr_anim_list = self.front_sprites
+        for i in range(5):
+            self.front_sprites.append(get_sprite(walk_sheet, i, 0, walk_frame_width, walk_frame_height))  # Row 0 = Front
+            self.back_sprites.append(get_sprite(walk_sheet, i, 3, walk_frame_width, walk_frame_height))   # Row 3 = Back
+            self.right_sprites.append(get_sprite(walk_sheet, i, 2, walk_frame_width, walk_frame_height))  # Row 2 = Right
+            self.left_sprites.append(get_sprite(walk_sheet, i, 1, walk_frame_width, walk_frame_height))   # Row 1 = Left
+        
+        for i in range(2):
+            self.idle_sprites.append(get_sprite(idle_sheet, i, 0, idle_frame_width, idle_frame_height))
 
-
-
-
-
-
-
+        self.curr_img = self.idle_sprites[0]
+        self.curr_anim_list = self.idle_sprites
