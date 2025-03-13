@@ -1,4 +1,5 @@
 
+#state.py
 
 class State():
     def __init__(self, game):
@@ -8,7 +9,7 @@ class State():
     def update(self, delta_time, actions):
         pass
 
-    def render(self, surface):
+    def render(self, display):
         pass
 
     def enter_states(self):
