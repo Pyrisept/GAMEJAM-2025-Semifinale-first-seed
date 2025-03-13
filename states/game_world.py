@@ -1,19 +1,15 @@
 
 import pygame, os 
 from states.state import State
-from states.pause_skjerm import PauseMenu
 
 
 class Game_world(State):
     def __init__(self, game):
         State.__init__(self, game)
-        self.genius = pygame.image.load(os.path.join(self.game.bilder_dir, "Map", "genius.jpg"))
+        self.genius = pygame.load(os.path.join(self.game.bilder_dir, "Map", "genius.jpg"))
         self.spiller = Spiller(self.game)
 
     def update(self, delta_time, actions):
-        if actions["start"]:
-            ny_state = PauseMenu(self.game)
-            ny_state.enter_states()
         self.spiller.update(delta_time, actions)
 
     def render(self, display):
