@@ -1,10 +1,13 @@
 #GAMES 
-
+#spill.py
 import os
 import time
 import pygame
 
-from states.start_skjerm import title
+from states.start_skjerm import StartSkjerm
+from states.state import State
+
+
 class Spill():
     def __init__(self):
         pygame.init()
@@ -14,7 +17,7 @@ class Spill():
         self.screen = pygame.display.set_mode((self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
         self.running, self.playing = True, True
         self.actions = {"left": False, "right": False, "up" : False, "down" : False, "action1" : False, "action2" : False, "start" : False}
-        self.dt, self.prev_time = 0, 0
+        self.dt, self.prev_time = 0, time.time()
         self.state_stack = []
         self.load_assets()
         self.load_states()
@@ -22,6 +25,7 @@ class Spill():
 
     def game_loop(self):
         while self.playing:
+            #print("Funny fun not fun time time fun")
             self.get_dt()
             self.get_events()
             self.update()
@@ -31,11 +35,14 @@ class Spill():
     def get_events(self):
 
         for event in pygame.event.get():
+            print(f"Event detected: {event}")
             if event.type == pygame.QUIT:
+                print("QUIT event detected")
                 self.playing = False
                 self.running = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
+                    print("ESCAPE key detected")
                     self.playing = False
                     self.running = False
                 if event.key == pygame.K_a:
@@ -74,6 +81,8 @@ class Spill():
         self.state_stack[-1].update(self.dt, self.actions) 
 
     def render(self):
+        #print("Jeg skulle ønske noen kunne rendere... Den ydmyke renderfunskjon")
+        #print(f"Current state: {type(self.state_stack[-1])}")
         self.screen.blit(pygame.transform.scale(self.game_canvas,(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)), (0,0))
         pygame.display.flip()
 
@@ -98,8 +107,10 @@ class Spill():
         self.font = pygame.font.Font(os.path.join(self.font_dir, "AGoblinAppears-o2aV.ttf"), 20)
 
     def load_states(self):
-        self.title_screen = Title(self)
+        print("Så sa han det er lastetid og lastet overalt...")
+        self.title_screen = StartSkjerm(self)
         self.state_stack.append(self.title_screen)
+        print(f"State stack: {self.state_stack}")
 
 
     def reset_keys(self):
@@ -111,6 +122,7 @@ class Spill():
 if __name__ == "__main__":
     g = Spill()
     while g.running:
+        print("Main loop running")
         g.game_loop()
 
 

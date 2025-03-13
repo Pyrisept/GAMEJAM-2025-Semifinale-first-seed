@@ -1,3 +1,4 @@
+#game_world.py
 
 import pygame, os 
 from states.state import State
@@ -10,7 +11,7 @@ class Game_world(State):
         self.spiller = Spiller(self.game)
 
     def update(self, delta_time, actions):
-        self.player.update(delta_time, actions)
+        self.spiller.update(delta_time, actions)
 
     def render(self, display):
         display.blit(self.genius, (0, 0))
@@ -20,6 +21,7 @@ class Spiller():
     def __init__(self, game):
         self.game = game
         self.load_sprites()
+        self.sprite_dir = game.spiller_dir
         self.posisjon_x, self.posisjon_y = 200, 200
         self.current_frame, self.last_frame_update = 0, 0
 
@@ -27,7 +29,7 @@ class Spiller():
     def update(self, delta_time, actions):
         #leser av input
         retning_x = actions["right"] - actions["left"]
-        retning_y = actions["right"] - actions["left"]
+        retning_y = actions["down"] - actions["up"]
         #reagerer
         self.posisjon_x += 100 * delta_time * retning_x
         self.posisjon_y += 100 * delta_time * retning_y
@@ -69,12 +71,16 @@ class Spiller():
         self.front_sprites, self.back_sprites, self.right_sprites, self.left_sprites = [],[],[],[]
 
         for i in range(1, 5):
-            self.front_sprites.append(pygame.image.load(os.path.join(self.sprite_dir, "spiller_front" + str(i) + ".png")))
-            self.back_sprites.append(pygame.image.load(os.path.join(self.sprite_dir, "spiller_back" + str(i) + ".png")))
-            self.right_sprites.append(pygame.image.load(os.path.join(self.sprite_dir, "spiller_right" + str(i) + ".png")))
-            self.left_sprites.append(pygame.image.load(os.path.join(self.sprite_dir, "spiller_left" + str(i) + ".png")))
+            try:
+                self.front_sprites.append(pygame.image.load(os.path.join(self.sprite_dir, "spiller_front" + str(i) + ".png")))
+                self.back_sprites.append(pygame.image.load(os.path.join(self.sprite_dir, "spiller_back" + str(i) + ".png")))
+                self.right_sprites.append(pygame.image.load(os.path.join(self.sprite_dir, "spiller_right" + str(i) + ".png")))
+                self.left_sprites.append(pygame.image.load(os.path.join(self.sprite_dir, "spiller_left" + str(i) + ".png")))
+            except FileNotFoundError:
+                print(f"Har ikke bilde for spiller_{i}.png")
+        
 
-        self.curr_img = self.front_sprites[0]
+        self.curr_img = self.front_sprites[0] if self.front_sprites else None
         self.curr_anim_list = self.front_sprites
 
 
