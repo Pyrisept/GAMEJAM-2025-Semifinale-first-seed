@@ -89,6 +89,8 @@ class Spill():
         self.screen.blit(pygame.transform.scale(self.game_canvas,(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)), (0,0))
         pygame.display.flip()
 
+
+
     def get_dt(self):
         nå = time.time()
         self.dt = nå - self.prev_time

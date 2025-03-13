@@ -6,7 +6,7 @@ from states.state import State
 class Game_world(State):
     def __init__(self, game):
         State.__init__(self, game)
-        self.genius = pygame.load(os.path.join(self.game.bilder_dir, "Map", "genius.jpg"))
+        self.genius = pygame.image.load(os.path.join(self.game.bilder_dir, "Map", "genius.jpg"))
         self.spiller = Spiller(self.game)
 
     def update(self, delta_time, actions):
