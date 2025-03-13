@@ -1,5 +1,3 @@
-#game_world.py
-
 import pygame, os 
 from states.state import State
 
@@ -20,11 +18,13 @@ class Game_world(State):
 class Spiller():
     def __init__(self, game):
         self.game = game
+        self.sprite_dir = os.path.join(self.game.assets_dir, "sprites", "character.png")
         self.load_sprites()
         self.sprite_dir = game.spiller_dir
         self.posisjon_x, self.posisjon_y = 200, 200
         self.current_frame, self.last_frame_update = 0, 0
-
+        self.curr_img = self.front_sprites[0]
+        self.curr_anim_list = self.front_sprites
 
     def update(self, delta_time, actions):
         #leser av input
@@ -45,19 +45,16 @@ class Spiller():
 
         #sette til idle om ingenting har skjedd
         if not (retning_x or retning_y):
-            self.curr_img = self.curr_anim_list[0]
+            self.curr_anim_list = self.idle_sprites
+            self.curr_img = self.idle_sprites[self.current_frame % len(self.idle_sprites)]
             return
 
         #Velger riktig bilder fra listene, egne lister for forskjellige retninger, valgfritt hvor mange animasjonsframes
         if retning_x:
-            if retning_x > 0: self.curr_anim_list = self.right_sprites
-            else:
-                self.curr_anim_list = self.left_sprites
-            
+            self.curr_anim_list = self.right_sprites if retning_x > 0 else self.left_sprites
+        
         if retning_y:
-            if retning_y > 0: self.curr_anim_list = self.front_sprites
-            else:
-                self.curr_anim_list = self.back_sprites
+            self.curr_anim_list = self.front_sprites if retning_y > 0 else self.back_sprites
         
 
         #gå på rundgang igjennom de forskjellige framesene
@@ -67,25 +64,29 @@ class Spiller():
             self.curr_img = self.curr_anim_list[self.current_frame]
 
     def load_sprites(self):
-        
         self.front_sprites, self.back_sprites, self.right_sprites, self.left_sprites = [],[],[],[]
+        self.idle_sprites = []
 
-        for i in range(1, 5):
-            try:
-                self.front_sprites.append(pygame.image.load(os.path.join(self.sprite_dir, "spiller_front" + str(i) + ".png")))
-                self.back_sprites.append(pygame.image.load(os.path.join(self.sprite_dir, "spiller_back" + str(i) + ".png")))
-                self.right_sprites.append(pygame.image.load(os.path.join(self.sprite_dir, "spiller_right" + str(i) + ".png")))
-                self.left_sprites.append(pygame.image.load(os.path.join(self.sprite_dir, "spiller_left" + str(i) + ".png")))
-            except FileNotFoundError:
-                print(f"Har ikke bilde for spiller_{i}.png")
+        walk_sheet = pygame.image.load(self.sprite_dir, "walk.png").convert_alpha()
+        idle_sheet = pygame.image.load(self.sprite_dir, "idle.png").convert_alpha()
+
+        walk_frame_width = walk_sheet.get_width() // 5
+        walk_frame_height = walk_sheet.get_height() // 4
+
+        idle_frame_width = idle_sheet.get_width() // 2
+        idle_frame_height = idle_sheet.get_height // 4
+
+        def get_sprite(sheet, x, y, width, height):
+             return sheet.subsurface(pygame.Rect(x * width, y * height, width, height))
+
+        for i in range(5):
+            self.front_sprites.append(get_sprite(walk_sheet, i, 0, walk_frame_width, walk_frame_height))  # Row 0 = Front
+            self.back_sprites.append(get_sprite(walk_sheet, i, 3, walk_frame_width, walk_frame_height))   # Row 3 = Back
+            self.right_sprites.append(get_sprite(walk_sheet, i, 2, walk_frame_width, walk_frame_height))  # Row 2 = Right
+            self.left_sprites.append(get_sprite(walk_sheet, i, 1, walk_frame_width, walk_frame_height))   # Row 1 = Left
         
+        for i in range(2):
+            self.idle_sprites.append(get_sprite(idle_sheet, i, 0, idle_frame_width, idle_frame_height))
 
-        self.curr_img = self.front_sprites[0] if self.front_sprites else None
-        self.curr_anim_list = self.front_sprites
-
-
-
-
-
-
-
+        self.curr_img = self.idle_sprites[0]
+        self.curr_anim_list = self.idle_sprites
