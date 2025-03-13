@@ -1,6 +1,6 @@
+
 import pygame, os 
 from states.state import State
-from states.pause_skjerm import PauseMenu
 
 
 class Game_world(State):
@@ -10,9 +10,6 @@ class Game_world(State):
         self.spiller = Spiller(self.game)
 
     def update(self, delta_time, actions):
-        if actions["start"]:
-            ny_state = PauseMenu(self.game)
-            ny_state.enter_states()
         self.spiller.update(delta_time, actions)
 
     def render(self, display):
@@ -24,6 +21,7 @@ class Spiller():
         self.game = game
         self.sprite_dir = os.path.join(self.game.assets_dir, "sprites", "character.png")
         self.load_sprites()
+        self.sprite_dir = game.spiller_dir
         self.posisjon_x, self.posisjon_y = 200, 200
         self.current_frame, self.last_frame_update = 0, 0
         self.curr_img = self.front_sprites[0]
