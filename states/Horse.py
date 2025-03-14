@@ -12,7 +12,7 @@ class PokemonRace(State):
     def __init__(self, game):
         super().__init__(game)
         
-        self.game_canvas = pygame.Surface(CANVAS_WIDTH, CANVAS_HEIGHT)
+        self.game_canvas = pygame.Surface((CANVAS_WIDTH, CANVAS_HEIGHT))
         self.screen = game.screen
 
         self.pokemon_images = [
@@ -27,6 +27,13 @@ class PokemonRace(State):
 
         self.font = pygame.font.SysFont("Arial", 24)
         self.race()
+
+
+    def update(self, delta_time, actions):
+        # Bruke state
+        if actions["action2"]:  
+            self.exit_state()
+    
 
     def race(self):
         winner = None

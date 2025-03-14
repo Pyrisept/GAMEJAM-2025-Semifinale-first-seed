@@ -4,6 +4,7 @@
 import pygame, os
 from states.state import State  
 from states.game_world import Game_world
+from states.Horse import PokemonRace
 
 class StartSkjerm(State):
     def __init__(self, game):
@@ -28,8 +29,6 @@ class StartSkjerm(State):
         if actions["start"]:  
             self.game.state_stack.append(Game_world(self.game))  # Gå til game_world= Game_world(self.game)  # Gå til game_world
             self.game.state_stack[-1].enter_states()
-        self.game.reset_keys()
-
 
         if actions["mouse_click"]:  # Check if the mouse is clicked
             mouse_pos = pygame.mouse.get_pos()
@@ -41,25 +40,39 @@ class StartSkjerm(State):
 
             for button in self.buttons:
                 if button.check_for_input(scaled_mouse_pos):
-                    print(f"Button clicked: {button.text}")  # Debug print
+                    #print(f"Button clicked: {button.text}")  
                     if button.text == "START":
+                        print("START button clicked! Transitioning to Game_world...")
                         self.game.state_stack.append(Game_world(self.game))
                         self.game.state_stack[-1].enter_state()
                     elif button.text == "QUIT":
+                        print("QUIT button clicked! Exiting game...")
                         self.game.running = False
-                    elif button.text == "RACE":  # Handle the race button
+                    elif button.text == "RACE":  
+                        print("RACE button clicked! Transitioning to PokemonRace...")
                         self.game.state_stack.append(PokemonRace(self.game))
                         self.game.state_stack[-1].enter_state()
+            
+            for button in self.buttons:
+                if button.check_for_input(scaled_mouse_pos):
+                    print(f"Button clicked: {button.text}")
+
+
+
+
+            self.game.reset_keys()
+
+
 
 
     def render(self, display):
         try :
             """Tegenr startskjermen"""
-            print("Rendering tid. og han rendereret overalt. Morgz mum")
+            #print("Rendering tid. og han rendereret overalt. Morgz mum")
             display.fill((0, 0, 0))  # Cleare display
             self.game.game_canvas.fill((0, 0, 255))
             
-            print(f"Rendering StartSkjerm... display: {type(display)} {display.get_size()}")
+            #print(f"Rendering StartSkjerm... display: {type(display)} {display.get_size()}")
 
             #title_text = self.font.render("RUDMON", True, (255, 215, 0))
             #display.blit(title_text, (self.game.SCREEN_WIDTH // 2 - title_text.get_width() // 2, 50))
@@ -71,7 +84,7 @@ class StartSkjerm(State):
 
 
 
-            print("Title text rendered")
+            #print("Title text rendered")
         
         except Exception as e:
             print(f"Error in StartSkjerm.render(): {e}")
@@ -84,7 +97,7 @@ class StartSkjerm(State):
         for button in self.buttons:
             button.change_color(scaled_mouse_pos)
             button.update(display)
-        print("Buttons rendered")
+        #print("Buttons rendered")
 
 
 

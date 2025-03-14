@@ -63,10 +63,12 @@ class Spill():
                     self.actions['up'] = True
                 if event.key == pygame.K_s:
                     self.actions['down'] = True
-                if event.key == pygame.K_p:
+                if event.key == pygame.K_i:
                     self.actions['action1'] = True
+                    print("action1 == True")
                 if event.key == pygame.K_o:
-                    self.actions['action2'] = True    
+                    self.actions['action2'] = True 
+                    print("action2 == True")   
                 if event.key == pygame.K_RETURN:
                     self.actions['start'] = True  
 
@@ -79,15 +81,17 @@ class Spill():
                     self.actions['up'] = False
                 if event.key == pygame.K_s:
                     self.actions['down'] = False
-                if event.key == pygame.K_p:
+                if event.key == pygame.K_i:
                     self.actions['action1'] = False
                 if event.key == pygame.K_o:
                     self.actions['action2'] = False
                 if event.key == pygame.K_RETURN:
                     self.actions['start'] = False 
-            if event.type == pygame.MOUSEBUTTONDOWN:  # Capture mouse clicks
+            if event.type == pygame.MOUSEBUTTONDOWN: 
+                print("ButtonDown, funker")
                 if event.button == 1:  # Left mouse button
                     self.actions["mouse_click"] = True
+                    print("Mouse_click, funker")
             if event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:
                     self.actions["mouse_click"] = False
@@ -148,9 +152,9 @@ class Spill():
             offset_y = random.randint(-intensity, intensity)
             self.screen.blit(pygame.transform.scale(self.game_canvas, (self.SCREEN_WIDTH, self.SCREEN_HEIGHT)), (offset_x, offset_y))
             pygame.display.flip()
-            pygame.time.delay(50)  # Small delay for effect
+            pygame.time.delay(50)  
 
-        print("Screen shake over!")  # Funny debug message
+        print("Screen shake over!") 
 
 
 
@@ -162,7 +166,7 @@ class Spill():
         original_size = (self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
 
         while time.time() - start_time < duration:
-            # Randomly stretch the screen size
+            
             scale_x = random.uniform(1.0, intensity)
             scale_y = random.uniform(1.0, intensity)
 
@@ -173,9 +177,8 @@ class Spill():
             self.screen.blit(squished_screen, ((self.SCREEN_WIDTH - new_width) // 2, (self.SCREEN_HEIGHT - new_height) // 2))
 
             pygame.display.flip()
-            pygame.time.delay(50)  # Delay for effect
+            pygame.time.delay(50)  # Delay for komedisk effekt
 
-        # Reset screen back to normal
         self.screen.blit(pygame.transform.scale(self.game_canvas, original_size), (0, 0))
         pygame.display.flip()
         

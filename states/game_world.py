@@ -17,6 +17,9 @@ class Game_world(State):
     def update(self, delta_time, actions):
         self.spiller.update(delta_time, actions)
 
+        if actions["action2"]:
+            self.exit_state()
+
     def render(self, display):
         display.blit(self.genius, (0, 0))
         self.spiller.render(display)
